@@ -644,19 +644,29 @@ function App() {
     visibleWorkspaceColumnCount,
   );
   const bookmarkItems = useMemo(
-    () => hydratedBookmarks.slice(0, bookmarkItemLimit),
-    [bookmarkItemLimit, hydratedBookmarks],
+    () => bookmarksViewMode === 'card'
+      ? hydratedBookmarks
+      : hydratedBookmarks.slice(0, bookmarkItemLimit),
+    [bookmarkItemLimit, bookmarksViewMode, hydratedBookmarks],
   );
   const browsingItems = useMemo(
-    () => buildBrowsingCards(tabs.slice(0, browsingItemLimit), autoGroupBrowsing),
-    [autoGroupBrowsing, browsingItemLimit, tabs],
+    () => buildBrowsingCards(
+      browsingViewMode === 'card' ? tabs : tabs.slice(0, browsingItemLimit),
+      autoGroupBrowsing,
+    ),
+    [autoGroupBrowsing, browsingItemLimit, browsingViewMode, tabs],
   );
   const snapshotItems = useMemo(
-    () => snapshots
-      .slice()
-      .sort((a, b) => new Date(b.savedAt).getTime() - new Date(a.savedAt).getTime())
-      .slice(0, snapshotItemLimit),
-    [snapshotItemLimit, snapshots],
+    () => {
+      const sortedSnapshots = snapshots
+        .slice()
+        .sort((a, b) => new Date(b.savedAt).getTime() - new Date(a.savedAt).getTime());
+
+      return snapshotsViewMode === 'card'
+        ? sortedSnapshots
+        : sortedSnapshots.slice(0, snapshotItemLimit);
+    },
+    [snapshotItemLimit, snapshots, snapshotsViewMode],
   );
   const enabledSearchEngines = useMemo(
     () => searchEngines.filter((engine) => engine.enabled),
@@ -1106,7 +1116,7 @@ function App() {
             simpleMode
               ? 'mt-0 max-h-0 translate-y-8 opacity-0 pointer-events-none'
               : cn(
-                'max-h-[44rem] translate-y-0 opacity-100',
+                'max-h-none translate-y-0 opacity-100',
                 collapseTopContent ? 'mt-0' : showClockLogo ? 'mt-8' : 'mt-4',
               ),
           )}

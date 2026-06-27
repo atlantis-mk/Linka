@@ -15,12 +15,13 @@ import {
 
 function App() {
   const workspaceUrl = browser.runtime.getURL('/newtab.html');
+  const extensionName = browser.i18n.getMessage('extensionName') || 'MarkDock';
 
   return (
     <main className="min-w-80 bg-background p-3 text-foreground">
       <Card className="shadow-none" size="sm">
         <CardHeader>
-          <CardTitle>Linka</CardTitle>
+          <CardTitle>{extensionName}</CardTitle>
           <CardDescription>浏览器工作区入口</CardDescription>
           <CardAction>
             <Badge variant="secondary">New Tab</Badge>
